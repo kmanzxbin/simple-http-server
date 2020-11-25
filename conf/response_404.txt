@@ -1,0 +1,13 @@
+HTTP/1.1 404 Not Found
+Server: Gateway
+Content-type: application/json;charset=UTF-8
+Connection: close
+Content-Length: 1000
+
+{
+    "timestamp": "${timestamp}",
+    "status": 404,
+    "error": "Not Found",
+    "message": "No message available",
+    "path": "${path}"
+}
