@@ -13,6 +13,7 @@
                 <include>*.bat</include>
                 <include>*.sh</include>
                 <include>*.txt</include>
+                <include>*.md</include>
             </includes>
 		</fileSet>
         
@@ -31,7 +32,7 @@
             <directory>target</directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
-                <include>java-socket-server-1.0.1-SNAPSHOT.jar</include>
+                <include>simple-http-server-1.0.1-SNAPSHOT.jar</include>
             </includes>
         </fileSet>
     </fileSets>

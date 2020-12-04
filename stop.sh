@@ -2,7 +2,7 @@
 PID=`jps | grep SocketServer | awk '{print $1}'`
 if [ "x$PID" != "x" ]; then
   kill -9 $PID
-  echo "kill JavaSocketServer $PID"
+  echo "kill SimpleHttpServer PID[$PID]"
 else
-  echo "JavaSocketServer was already killed"
+  echo "SimpleHttpServer was already killed"
 fi

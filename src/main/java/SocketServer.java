@@ -117,7 +117,7 @@ public class SocketServer {
    
     public void startNIO() {
         
-        log.info("\n" + "Java Socket Server" + "\n" + "version: 2020.11.23(NIO)");
+        log.info("\n" + "Simple Http Server" + "\n" + "version: 2020.11.28(NIO)");
         ServerSocketChannel serverSocketChannel = null;
         //创建serverSocketChannel，监听8888端口
         try {
@@ -132,7 +132,7 @@ public class SocketServer {
             
             executorService =  Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
-            log.info("JavaSocketServer is started! linstening on port: " + serverPort);
+            log.info("Simple Http Server is started! linstening on port: " + serverPort);
 
             while (true) {
                 try {
