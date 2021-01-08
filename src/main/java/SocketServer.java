@@ -155,7 +155,14 @@ public class SocketServer {
                             handleRead(key);
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        if (log.isDebugEnabled()) {
+                            StringBuilder sBuilder = new StringBuilder(e.getMessage());
+                            for (StackTraceElement element : e.getStackTrace()) {
+                                sBuilder.append("\n").append(element);
+                            }
+                            log.debug(sBuilder.toString());
+                        }
+                        
                     }
                     //处理完后移除当前使用的key
                     keyIterator.remove();

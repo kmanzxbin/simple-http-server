@@ -50,6 +50,10 @@ public class Logger {
      * 时间/级别/线程名称/消息内容
      */
     String pattern = "%s [%-5s] [%s] %s";
+    
+    boolean isDebugEnabled() {
+        return this.logLevel <= LOG_LEVEL_DEBUG;
+    }
 
     private void log(String level, String msg, int logLevel) {
         if (logLevel >= this.logLevel) {
