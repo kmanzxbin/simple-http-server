@@ -30,7 +30,7 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
-                            <finalName>SimpleHttpServer_2020.11.28</finalName>
+                            <finalName>SimpleHttpServer_2021.2.21</finalName>
                             <descriptors>
                                 <descriptor>
                                     src/main/assembly/assembly.xml

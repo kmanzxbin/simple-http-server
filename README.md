@@ -1,21 +1,26 @@
-# simple-http-server
+# Simple-Http-Server
 
-##变更说明
-v2020-11-23  
-1.修改为NIO实现  
-2.支持{}作为通配符匹配path a~b~c~{} 可以匹配 a/b/c/foo路径，内部会自动转化为a/b/c\w+作为key进行正则匹配  
+##Change log
+
+###v2021-2-21  
+1.supported send diff response by diff method, file name will be like this response_{url}({METHOD}).txt  
+2.support ${UUID} variable for random String in response content  
+
+###v2020-11-23  
+1.switch implementation to NIO  
+2.Support {} as a wildcard to match path a~b~c~{} can match a/b/c/foo path, internally it will be automatically converted to a/b/c\w+ as the key for regular matching  
   
-##功能说明
-1.轻量级的HTTP服务端，能够根据path匹配对应的响应消息然后返回，主要作为接口测试工具使用  
-2.没有外部依赖，以简单实用为原则  
+##About Simple-Http-Server
+1.Lightweight HTTP server, which can return the corresponding response message according to the path/method and then return it, mainly used as an interface testing tool  
+2.No external dependence, based on the principle of simplicity and practicality
 
-##使用方式
+##How to use
 chmod u+x *.sh  
-./start.sh启动程序  
-./stop.sh杀进程  
+./start.sh  
+./stop.sh  
 
-##配置说明
-服务的配置保存在conf/conf.properties中，  
-可配置端口、响应等待时长等配置  
-也可以通过soTimeout.iisFoo来指定某个path的响应时长  
-也可以通过respTime.properties来配置按比例分布的响应时长  
+##How to config
+server's configuration stored in file conf/conf.properties  
+U can config port, response delay time and so on, U can find more explanation in conf.properties  
+U can also define response delay time for special URL like this 'soTimeout.iisFoo'  
+U can also define proportional response delay time in respTime.properties  
