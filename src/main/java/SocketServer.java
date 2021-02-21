@@ -26,9 +26,11 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /*
  * @(#)SocketTool.java Dec 6, 2012
@@ -117,7 +119,7 @@ public class SocketServer {
    
     public void startNIO() {
         
-        log.info("\n" + "Simple Http Server" + "\n" + "version: 2020.11.28(NIO)");
+        log.info("\n" + "Simple Http Server" + "\n" + "version: 2021.2.21(NIO)");
         ServerSocketChannel serverSocketChannel = null;
         //创建serverSocketChannel，监听8888端口
         try {
@@ -275,7 +277,9 @@ public class SocketServer {
         
         String[] lines = content.split("\n");
         
-        String url = lines[0].split(" ")[1];
+        String[] requestLineSegment = lines[0].split(" ");
+        String method = requestLineSegment[0];
+        String url = requestLineSegment[1];
         if (url.startsWith("/")) {
             url = url.substring(1);
         }
@@ -292,7 +296,7 @@ public class SocketServer {
         socketChannel.socket().setSoTimeout(soTimeout * 2);
         
         
-        final String response= makeResponse(url);
+        final String response= makeResponse(method, url);
         if (response == null) {
             log.warn("no matched response");
             return;
@@ -301,19 +305,25 @@ public class SocketServer {
         executorService.schedule(new ResponseRunnable(response, socketChannel), soTimeout, TimeUnit.MILLISECONDS);
 }
     
-    String makeResponse(String url) throws Exception {
+    String makeResponse(String method, String url) throws Exception {
         String response = "";
+        method = method.toLowerCase();
         if (url != null) {
             String key = null;
-            for (String tmpKey : responseMap.keySet()) {
-                if (url.matches(tmpKey)) {
-                    key = tmpKey;
-                    break;
+            if (responseMap.containsKey(url + "(" + method + ")")) {
+                key = url + "(" + method + ")";
+            } else if (responseMap.containsKey(url)) {
+                key = url;
+            } else {
+                for (String tmpKey : responseMap.keySet()) {
+                    if (url.matches(tmpKey) || String.format("%s\\(%s\\)", url, method).matches(tmpKey)) {
+                        key = tmpKey;
+                        break;
+                    }
                 }
             }
-            if ( key!= null) {
-                log.debug("url : " + url + " matchd key " + key);
-                
+            if (key != null) {
+                log.debug("method: " + method + " url : " + url + " matchd key " + key);
                 response = responseMap.get(key).getNextContent();
                 
             } else if (responseMap.containsKey("404")) {
@@ -335,7 +345,11 @@ public class SocketServer {
             // log.debug("*** matchLine: " + matchLine);
             // }
         } else {
-            response = responseMap.get(DEFAULT).getNextContent();
+            if (responseMap.containsKey(DEFAULT + "(" + method + ")")) {
+                response = responseMap.get(DEFAULT + "(" + method + ")").getNextContent();
+            } else {
+                response = responseMap.get(DEFAULT).getNextContent();
+            }
         }
         
         Date currDate = new Date();
@@ -345,6 +359,8 @@ public class SocketServer {
         response = response.replace("${CurrentTimeSecond}",
                 new SimpleDateFormat("yyyyMMddHHmmss")
                         .format(currDate));
+        response = response.replace("${UUID}",
+                UUID.randomUUID().toString());
 
         response = setContentLength(response, encode);
         
@@ -394,8 +410,8 @@ public class SocketServer {
 
     static class ContentBean {
         String keyName;
-        List<String> list;
-        int index;
+        List<String> responseList;
+        AtomicInteger index = new AtomicInteger();
     
         public String getKeyName() {
             return keyName;
@@ -405,31 +421,26 @@ public class SocketServer {
             this.keyName = keyName;
         }
     
-        public synchronized List<String> getList() {
-            return list;
+        public void setList(List<String> list) {
+            this.responseList = list;
         }
     
-        public synchronized void setList(List<String> list) {
-            this.list = list;
-        }
-    
-        public synchronized int getIndex() {
-            return index;
-        }
-    
-        public synchronized void setIndex(int index) {
-            this.index = index;
-        }
-    
-        public synchronized String getNextContent() {
-            if (list == null || list.size() == 0) {
+        public String getNextContent() {
+            if (responseList == null || responseList.size() == 0) {
                 return null;
             }
-            if (index >= list.size()) {
-                index = 0;
+            if (responseList.size() == 1) {
+                return responseList.get(0);
+            }
+            if (index.get() >= responseList.size()) {
+                synchronized (index) {
+                    if (index.get() >= responseList.size()) {
+                        index.set(0);
+                    }
+                }
             }
             log.debug("get " + keyName + " content by index: " + index);
-            return list.get(index++);
+            return responseList.get(index.getAndIncrement());
         }
     
     }
