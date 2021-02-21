@@ -307,7 +307,8 @@ public class SocketServer {
     
     String makeResponse(String method, String url) throws Exception {
         String response = "";
-        method = method.toLowerCase();
+        // 此处不处理，响应模板文件名中的必须是大写
+//        method = method.toLowerCase();
         if (url != null) {
             String key = null;
             if (responseMap.containsKey(url + "(" + method + ")")) {
@@ -433,7 +434,7 @@ public class SocketServer {
                 return responseList.get(0);
             }
             if (index.get() >= responseList.size()) {
-                synchronized (index) {
+                synchronized (ContentBean.this) {
                     if (index.get() >= responseList.size()) {
                         index.set(0);
                     }
