@@ -3,7 +3,7 @@
 ## Change log
 
 ### v2021-2-21  
-1. supported send diff response by diff method, file name will be like this response_{url}({METHOD}).txt  
+1. supported send diff response by diff method, file name will be like this response_{url}[{METHOD}].txt  
 2. support ${UUID} variable for random String in response content  
 
 ### v2020-11-23  
