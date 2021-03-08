@@ -311,8 +311,8 @@ public class SocketServer {
 //        method = method.toLowerCase();
         if (url != null) {
             String key = null;
-            if (responseMap.containsKey(url + "(" + method + ")")) {
-                key = url + "(" + method + ")";
+            if (responseMap.containsKey(url + "[" + method + "]")) {
+                key = url + "[" + method + "]";
             } else if (responseMap.containsKey(url)) {
                 key = url;
             } else {
@@ -346,8 +346,8 @@ public class SocketServer {
             // log.debug("*** matchLine: " + matchLine);
             // }
         } else {
-            if (responseMap.containsKey(DEFAULT + "(" + method + ")")) {
-                response = responseMap.get(DEFAULT + "(" + method + ")").getNextContent();
+            if (responseMap.containsKey(DEFAULT + "[" + method + "]")) {
+                response = responseMap.get(DEFAULT + "[" + method + "]").getNextContent();
             } else {
                 response = responseMap.get(DEFAULT).getNextContent();
             }
